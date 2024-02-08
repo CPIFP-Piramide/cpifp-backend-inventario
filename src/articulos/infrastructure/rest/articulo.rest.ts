@@ -1,67 +1,50 @@
 import express, { Request, Response } from "express";
 
 //use cases
-import DepartamentoUseCases from "../../application/departamento.usecases";
+import ArticuloUseCases from "../../application/articulo.usecases";
 //repositories
-import DepartamentoRepositoryPostgres from "../db/departamento.postgres";
 import Departamento from "../../domain/Departamento";
-import Articulo from "../../../articulos/domain/Articulo";
+import Articulo from "../../domain/Articulo";
+import ArticuloRepositoryPostgres from "../db/articulo.postgres";
+import { isAuth } from "../../../context/security/auth";
 
-const departamentoUseCases: DepartamentoUseCases = new DepartamentoUseCases(
-  new DepartamentoRepositoryPostgres()
+const articuloUseCases: ArticuloUseCases = new ArticuloUseCases(
+  new ArticuloRepositoryPostgres()
 );
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", isAuth, async (req: Request, res: Response) => {
   try {
-    const data = await departamentoUseCases.find();
+    const data = await articuloUseCases.find();
     res.send(data);
   } catch (error) {
     res.send(error);
   }
 });
 
-router.get("/:nombre", async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const departamento: Departamento = await departamentoUseCases.findByName(
-      req.params.nombre
+    const articulo: Articulo = await articuloUseCases.findById(
+      Number(req.params.id)
     );
-    const articulos: Articulo[] = await departamentoUseCases.findArticulos(
-      departamento
-    );
-    departamento.articulos = articulos;
-    res.send(departamento);
+    res.send(articulo);
   } catch (error) {
     res.send(error);
   }
 });
-
-router.get("/:nombre/espacio/:espacio", async (req: Request, res: Response) => {
+/*
+router.get("/:nombre/aula/:aula", async (req: Request, res: Response) => {
   try {
-    const departamento: Departamento = await departamentoUseCases.findByName(
+    const departamento: Departamento = await articuloUseCases.findByName(
       req.params.nombre
     );
-    const articulos: Articulo[] = await departamentoUseCases.findArticulos(
+    const articulos: Articulo[] = await articuloUseCases.findArticulos(
       departamento,
-      req.params.espacio
+      req.params.aula
     );
     departamento.articulos = articulos;
     res.send(departamento);
-  } catch (error) {
-    res.send(error);
-  }
-});
-
-router.post("/", async (req: Request, res: Response) => {
-  try {
-    const departamento: Departamento = {
-      nombre: req.body.nombre,
-    };
-    await departamentoUseCases.create(departamento);
-    const departamentoCreado: Departamento =
-      await departamentoUseCases.findByName(req.body.nombre);
-    res.send(departamentoCreado);
   } catch (error) {
     res.send(error);
   }
@@ -72,7 +55,9 @@ router.post("/:nombre", async (req: Request, res: Response) => {
     const articulo: Articulo = {
       nombre: req.body.nombre,
       descripcion: req.body.descripcion,
-      espacio: req.body.espacio,
+      aula: req.body.aula,
+      categoria: req.body.categoria,
+      subcategoria: req.body.subcategoria,
     };
     const departamento: Departamento = await departamentoUseCases.findByName(
       req.params.nombre
@@ -94,7 +79,10 @@ router.put("/:nombre/articulo/:id", async (req: Request, res: Response) => {
       id: Number(req.params.id),
       nombre: req.body.nombre,
       descripcion: req.body.descripcion,
-      espacio: req.body.espacio,
+      aula: req.body.aula,
+      categoria: req.body.categoria,
+      subcategoria: req.body.subcategoria,
+      fechabaja: req.body.fechabaja,
     };
     const departamento: Departamento = await departamentoUseCases.findByName(
       req.params.nombre
@@ -114,9 +102,6 @@ router.delete("/:nombre/articulo/:id", async (req: Request, res: Response) => {
   try {
     const articulo: Articulo = {
       id: Number(req.params.id),
-      nombre: req.body.nombre,
-      descripcion: req.body.descripcion,
-      espacio: req.body.espacio,
     };
     const departamento: Departamento = await departamentoUseCases.findByName(
       req.params.nombre
@@ -131,5 +116,5 @@ router.delete("/:nombre/articulo/:id", async (req: Request, res: Response) => {
     res.send(error);
   }
 });
-
-export { router as routerDepartamentos };
+*/
+export { router as routerArticulos };

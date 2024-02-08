@@ -1,14 +1,16 @@
-import Articulo from "../../articulos/domain/Articulo";
+import Articulo from "./Articulo";
 import Departamento from "./Departamento";
 
-export default interface DepartamentoRepository {
-  find(): Promise<Departamento[]>;
-  findByName(nombre: string): Promise<Departamento>;
+export default interface ArticuloRepository {
+  find(): Promise<Articulo[]>;
+  findById(id: number): Promise<Articulo>;
+  findByDepartamento(departamento: Departamento): Promise<Articulo[]>;
   findArticulos(
     departamento: Departamento,
-    espacio?: string
+    aula?: string,
+    categoria?: string,
+    subcategoria?: string
   ): Promise<Articulo[]>;
-  create(departamento: Departamento): Promise<void>;
   add(departamento: Departamento, articulo: Articulo): Promise<void>;
   update(departamento: Departamento, articulo: Articulo): Promise<void>;
   delete(departamento: Departamento, articulo: Articulo): Promise<void>;

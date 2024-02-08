@@ -1,4 +1,4 @@
-import Articulo from "../../articulos/domain/Articulo";
+import Articulo from "./Articulo";
 
 export default interface Departamento {
   nombre: string;
